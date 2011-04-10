@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://deezercont/skin/dc.css" type="text/css"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * Contributor(s):
+ *  - Guillaume Verstraete <versgui@gmail.com>, 2011
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required bupdy the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** -->
+
+<!DOCTYPE overlay SYSTEM "chrome://deezercont/locale/fr-FR/deezercont.dtd">
+
+<overlay id="deezercont" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <script type="application/x-javascript" src="chrome://deezercont/content/Tween.js"/>
+    <script type="application/x-javascript" src="chrome://deezercont/content/EventDispatch.js"/>
+    <script type="application/x-javascript" src="chrome://deezercont/content/Deezer.js"/>
+    <script type="application/x-javascript" src="chrome://deezercont/content/Tools.js"/>
+    
+    <stringbundleset id="stringbundleset">
+	<stringbundle id="strings" src="chrome://deezercont/locale/DeezerControl.properties"/>
+    </stringbundleset>
+    
+    <popupset>
+	<menupopup id="dc-volume-scale-mp">
+	    <scale min="0" max="100" orient="vertical" movetoclick="true" id="dc-volume-scale"/>
+	</menupopup>
+	
+	<menupopup id="dc-tools-menu">
+	    <menuitem label="Options de DeezerControl..." oncommand="VersguiDeezerControl.BrowserOverlay.showPrefWindow();" />
+	</menupopup>
+    </popupset>
+    
+    <statusbar id="status-bar">
+	<box id="deezer-bar" context="dc-tools-menu">
+	    <image id="dc-prev" class="icon" tooltiptext="Précédent" />
+	    <image id="dc-play" class="icon" tooltiptext="Lire" />
+	    <image id="dc-pause" class="icon" tooltiptext="Pause" />
+	    <image id="dc-next" class="icon" tooltiptext="Suivant" />
+	    <image id="dc-volume" class="dc-volume icon" tooltiptext="Suivant" popup="dc-volume-scale-mp" />
+	    <label id="dc-statusmsg" />
+	</box>
+    </statusbar>
+</overlay>

@@ -1,0 +1,65 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#deezer-bar {
+	width: 0;
+	overflow: hidden;
+}
+
+image.icon {
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	background-position: 0 2px;
+}
+
+#dc-panel label {
+	margin-right: 35px;
+	text-align: right;
+}
+
+.loading {
+	background-image: url(chrome://deezercont/skin/loading.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+#dc-play {
+	background-image: url(chrome://deezercont/skin/control_play.png);
+}
+
+#dc-play:hover {
+	background-image: url(chrome://deezercont/skin/control_play_blue.png);
+}
+
+#dc-pause {
+	background-image: url(chrome://deezercont/skin/control_pause.png);
+	display: none;
+}
+
+#dc-pause:hover {
+	background-image: url(chrome://deezercont/skin/control_pause_blue.png);
+}
+
+#dc-prev {
+	background-image: url(chrome://deezercont/skin/control_rewind.png);
+}
+
+#dc-prev:hover {
+	background-image: url(chrome://deezercont/skin/control_rewind_blue.png);
+}
+
+#dc-next {
+	background-image: url(chrome://deezercont/skin/control_fastforward.png);
+}
+
+#dc-next:hover {
+	background-image: url(chrome://deezercont/skin/control_fastforward_blue.png);
+}
+
+.dc-volume {
+	background-image: url(chrome://deezercont/skin/sound_none.png);
+}
+
+.dc-volume-off {
+	background-image: url(chrome://deezercont/skin/sound_mute.png);
+}

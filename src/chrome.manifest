@@ -1,0 +1,5 @@
+content deezercont chrome/content/
+skin    deezercont default chrome/skin/
+locale  deezercont en-US   chrome/locale/en-US/
+locale  deezercont fr-FR   chrome/locale/fr-FR/
+overlay chrome://browser/content/browser.xul  chrome://deezercont/content/overlay.xul
