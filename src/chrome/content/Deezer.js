@@ -39,6 +39,8 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
         _currentTrack : null,
         _trackChange : null,
         _deezerWebSite : null,
+        _deezerApiGateway : null,
+        _deezerApiKey : null,
         _prefs : {
             notification : true
         },
@@ -83,6 +85,7 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                 vdc._deezerWebSite.defaultView.addEventListener('unload', vdc.cleanup, false);
                 
                 document.getElementById('deezer-bar').addEventListener('click', vdc.setAction, false);
+                document.getElementById('deezer-bar').addEventListener('command', vdc.search, false);
                 document.getElementById('dc-volume-scale').addEventListener('change', vdc.setAction, false);
                 
                 // remove the timer (initialized on cleanup Event) if any
@@ -98,6 +101,26 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                 
                 // detect track change
                 vdc._trackChange.addListener('trackChange', vdc.onChangeTrack);
+                
+                // retrieve Deezer api's gateway and authentication key
+                var req = new XMLHttpRequest();
+        		req.open('get', 'http://www.deezer.com/fr/xml/config.php', true);
+        		req.onreadystatechange = function (aEvt) {
+        			if (req.readyState == 4 && req.status == 200) {
+        				var dom = new DOMParser().parseFromString(req.responseText, "application/xml")
+        				var varSet = dom.getElementsByTagName("var");
+        				for (var i = 0; i < varSet.length; i++) {
+        					if (vdc._deezerApiGateway != null && vdc._deezerApiKey != null)
+        						break;
+        					var name = varSet[i].getAttribute("name");
+        					if (name == "api_gateway")
+        						vdc._deezerApiGateway = varSet[i].textContent;
+        					else if (name == "api_key")
+        						vdc._deezerApiKey = varSet[i].textContent;
+        				}
+        			}
+        		}
+        		req.send(null);
             }
         },
         
@@ -203,6 +226,46 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
             }
         },
         
+        search : function(e) {
+        	if (vdc._deezerApiKey != null && vdc._deezerApiGateway != null) {
+	        	var searchText = e.originalTarget.value;
+	        	if (searchText != '') {
+	        		var req = new XMLHttpRequest();
+	        		req.open('post', vdc._deezerApiGateway + '?method=deezer_pageSearch&output=3&input=3&api_key=' + vdc._deezerApiKey, true);
+	        		req.setRequestHeader('Content-Type','application/json');
+	        		req.onreadystatechange = function (aEvt) {
+	        			if (req.readyState == 4 && req.status == 200) {
+	        				var response = JSON.parse(req.responseText);
+							if (response != null) {
+								var results = response.results;
+								if (results != null) {
+									var track = results.TRACK;
+									if (track != null) {
+										var data = track.data;
+										if (data != null) {
+											var first = data[0];
+											if (first != null) {
+												var albumId = first.ALB_ID;
+												if (albumId != null) {
+													var script = vdc._deezerWebSite.createElement('script');
+							                        script.setAttribute('type', 'application/javascript');
+							                        script.setAttribute('id', 'versgui-dc-script');
+							        				script.textContent = 'dzPlayer.playAlbum(' + albumId + ', 0);';
+							        				vdc._deezerWebSite.body.appendChild(script);
+							        				vdc.updateStatus();
+												}
+											}
+										}
+									}
+								}
+							}
+	        			}
+	        		};
+	        		req.send('{"NB":1,"QUERY":"' + searchText + '"}');
+	        	}
+        	}
+        },
+
         onChangeTrack : function(e) {
             
             if( vdc._deezerWebSite.getElementById('play').style.display == 'none' ) {

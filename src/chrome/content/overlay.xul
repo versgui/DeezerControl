@@ -60,6 +60,7 @@
 	    <image id="dc-pause" class="icon" tooltiptext="Pause" />
 	    <image id="dc-next" class="icon" tooltiptext="Suivant" />
 	    <image id="dc-volume" class="dc-volume icon" tooltiptext="Volume" popup="dc-volume-scale-mp" />
+	    <textbox id="dc-search" tooltiptext="Rechercher" type="search" searchbutton="true" size="10" />
 	    <label id="dc-statusmsg" />
 	</box>
     </statusbar>
