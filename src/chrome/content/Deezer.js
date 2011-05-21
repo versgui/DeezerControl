@@ -39,6 +39,8 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
         _currentTrack : null,
         _trackChange : null,
         _deezerWebSite : null,
+        _deezerApiGateway : null,
+        _deezerApiKey : null,
         _prefs : {
             notification : true
         },
@@ -73,7 +75,8 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
             if (!(e.originalTarget instanceof HTMLDocument && e.originalTarget.URL != 'about:blank'))
                 return;
             
-            if (/\www\.deezer\.com$/. test(e.originalTarget.location.hostname) &&
+            if ((/\www\.deezer\.com$/. test(e.originalTarget.location.hostname) ||
+                /beta\.deezer\.com$/. test(e.originalTarget.location.hostname)) &&
                 e.originalTarget.getElementById('dz_player') ) {
                 
                 vdc._trackChange = new versguiEventTarget();
@@ -89,7 +92,7 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                 clearTimeout(vdc._timers.security);
                 vdc._timers.update = setInterval(function() { vdc.updateStatus() }, 200);
                 
-                if( parseInt(document.getElementById('deezer-bar').style.width) < 350 ||
+                if( parseInt(document.getElementById('deezer-bar').style.width) < 360 ||
                    document.getElementById('deezer-bar').style.width == null ||
                    document.getElementById('deezer-bar').style.width == '') {
                     
@@ -103,14 +106,15 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
         
         updateStatus : function() {
             
-            if( vdc._deezerWebSite.getElementsByClassName('title')[0] ) {
+            var search_track = vdc._deezerWebSite.getElementsByClassName('info_m')[0].getElementsByClassName('title')[0];
+            
+            if( search_track ) {
                 
-                let track = vdc._deezerWebSite.getElementsByClassName('title')[0].textContent;
-                //window.dump(track+'\n');
+                let track = search_track.textContent;
+                
                 if( track != vdc._currentTrack && track != '' ) {
                     
-                    vdc.Tools.CSS.removeClass( document.getElementById('deezer-bar'),
-                                               'loading' );
+                    vdc.Tools.CSS.removeClass( document.getElementById('deezer-bar'), 'loading' );
                     
                     vdc._currentTrack = track;
                     document.getElementById('dc-statusmsg').value = track;
@@ -118,8 +122,7 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                     vdc._trackChange.fire({ type: "trackChange" });
                 }
                 else if( track == '' ) {
-                    vdc.Tools.CSS.addClass( document.getElementById('deezer-bar'),
-                                           'loading' );
+                    vdc.Tools.CSS.addClass( document.getElementById('deezer-bar'), 'loading' );
                 }
             }
             
@@ -155,13 +158,13 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                 var currentVolume = parseInt( vdc._deezerWebSite.getElementById('volumeslider').getElementsByTagName('a')[0].style.left );
                 
                 //if( currentVolume != document.getElementById('dc-volume-scale').value )
-                    document.getElementById('dc-volume-scale').value = 100-currentVolume;
+                    //document.getElementById('dc-volume-scale').value = 100-currentVolume;
             } 
         },
         
         setAction : function(e) {
             
-            // only if it's a left click except if it's a <scale> (volume for ex)
+            // only if it's a left click except if it's a <scale> (volume)
             if( e.button == 0 || e.originalTarget.tagName == 'scale' ) {
                 let d = vdc._deezerWebSite.getElementById('versgui-dc-script');
                 
@@ -174,16 +177,16 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                         
                 switch( e.originalTarget.id ) {
                     case 'dc-play':
-                        script.textContent = 'dzPlayer.play();';
+                        script.textContent = 'playercontrol.doAction(\'play\')';
                     break;
                     case 'dc-pause':
-                        script.textContent = 'dzPlayer.pause();';
+                        script.textContent = 'playercontrol.doAction(\'pause\')';
                     break;
                     case 'dc-next':
-                        script.textContent = 'dzPlayer.nextSong();';
+                        script.textContent = 'playercontrol.doAction(\'next\')';
                     break;
                     case 'dc-prev':
-                        script.textContent = 'dzPlayer.prevSong();';
+                        script.textContent = 'playercontrol.doAction(\'prev\')';
                     break;
                     case 'dc-volume-scale':
                         var sliderValue = parseInt(10-e.originalTarget.value/10)/10;
@@ -193,7 +196,13 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
                         else
                             document.getElementById('dc-volume').setAttribute('class', 'dc-volume icon');
                         
-                        script.textContent = 'dzPlayer.setVolume('+ sliderValue +')';
+                        //script.textContent = 'dzPlayer.setVolume('+ sliderValue +')';//alert('dzPlayer.setVolume('+ sliderValue +')');
+                        script.textContent = 'playercontrol.doAction(\'volume\', ['+ sliderValue +'])';
+                        
+                        //vdc._deezerWebSite.getElementById('volumeslider').getElementsByTagName('a')[0].style.left = sliderValue*50 +'px';
+                        vdc._deezerWebSite.getElementById('volumeslider').slider({
+                            value: e.originalTarget.value
+                        });
                     break;
                 }
                     
@@ -226,13 +235,13 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
         
         showBox : function()	{
                 
-            let t = new Tween(document.getElementById('deezer-bar').style, 'width', Tween.regularEaseOut, 0, 350, 2, 'px');
+            let t = new Tween(document.getElementById('deezer-bar').style, 'width', Tween.regularEaseOut, 0, 360, 2, 'px');
             t.start();
         },
         
         hideBox : function()	{
                 
-            let t = new Tween(document.getElementById('deezer-bar').style, 'width', Tween.regularEaseOut, 350, 0, 2, 'px');
+            let t = new Tween(document.getElementById('deezer-bar').style, 'width', Tween.regularEaseOut, 360, 0, 2, 'px');
             t.start();
             
             document.getElementById('deezer-bar').removeEventListener('click', vdc.setAction, false);
@@ -282,6 +291,11 @@ if ("undefined" == typeof(VersguiDeezerControl)) {
           }
         
           this._preferencesWindow.focus();
+        },
+        
+        setSearchFocus : function(e) {
+            //alert('yep');
+            document.getElementById('dc-search-popup-tb').focus();
         }
     };
         

@@ -39,28 +39,39 @@
     <script type="application/x-javascript" src="chrome://deezercont/content/Deezer.js"/>
     <script type="application/x-javascript" src="chrome://deezercont/content/Tools.js"/>
     
+    <!--
     <stringbundleset id="stringbundleset">
-	<stringbundle id="strings" src="chrome://deezercont/locale/DeezerControl.properties"/>
+        <stringbundle id="strings" src="chrome://deezercont/locale/DeezerControl.properties"/>
     </stringbundleset>
+    -->
     
     <popupset>
-	<menupopup id="dc-volume-scale-mp">
-	    <scale min="0" max="100" orient="vertical" movetoclick="true" id="dc-volume-scale"/>
-	</menupopup>
-	
-	<menupopup id="dc-tools-menu">
-	    <menuitem label="Options de DeezerControl..." oncommand="VersguiDeezerControl.BrowserOverlay.showPrefWindow();" />
-	</menupopup>
+        <menupopup id="dc-volume-scale-mp">
+            <scale min="0" max="100" orient="vertical" movetoclick="true" id="dc-volume-scale"/>
+        </menupopup>
+        
+        <menupopup id="dc-tools-menu">
+            <menuitem label="Options de DeezerControl..." oncommand="VersguiDeezerControl.BrowserOverlay.showPrefWindow();" />
+        </menupopup>
+        
+         <menupopup id="dc-search-popup">
+            <hbox>
+                <label value="Chercher" />
+                <textbox width="250" id="dc-search-popup-tb" />
+            </hbox>
+        </menupopup>
     </popupset>
     
     <statusbar id="status-bar">
-	<box id="deezer-bar" context="dc-tools-menu">
-	    <image id="dc-prev" class="icon" tooltiptext="Précédent" />
-	    <image id="dc-play" class="icon" tooltiptext="Lire" />
-	    <image id="dc-pause" class="icon" tooltiptext="Pause" />
-	    <image id="dc-next" class="icon" tooltiptext="Suivant" />
-	    <image id="dc-volume" class="dc-volume icon" tooltiptext="Volume" popup="dc-volume-scale-mp" />
-	    <label id="dc-statusmsg" />
-	</box>
+        <box id="deezer-bar" context="dc-tools-menu">
+            <image id="dc-prev" class="icon" tooltiptext="Précédent" />
+            <image id="dc-play" class="icon" tooltiptext="Lire" />
+            <image id="dc-pause" class="icon" tooltiptext="Pause" />
+            <image id="dc-next" class="icon" tooltiptext="Suivant" />
+            <image id="dc-volume" class="dc-volume icon" tooltiptext="Volume" popup="dc-volume-scale-mp" />
+            <image id="dc-search" class="icon" tooltip="Chercher sur Deezer" popup="dc-search-popup"
+                    onpopupshown="VersguiDeezerControl.BrowserOverlay.setFocusSearch()" />
+            <label id="dc-statusmsg" />
+        </box>
     </statusbar>
 </overlay>

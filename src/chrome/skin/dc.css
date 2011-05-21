@@ -63,3 +63,7 @@ image.icon {
 .dc-volume-off {
 	background-image: url(chrome://deezercont/skin/sound_mute.png);
 }
+
+#dc-search {
+    background-image: url(chrome://deezercont/skin/search.png);
+}
